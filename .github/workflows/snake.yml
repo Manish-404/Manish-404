@@ -1,0 +1,54 @@
+# ============================================================================
+# ANIMATED CONTRIBUTION SNAKE — SETUP
+# ============================================================================
+# What this does:
+#   Generates an SVG of a snake "eating" your contribution graph, updated
+#   daily, and pushes it to a branch called "output" on your profile repo.
+#   The README.md handoff already references the resulting file.
+#
+# How to install:
+#   1. In your PROFILE repo (the one named exactly your GitHub username),
+#      create the file:  .github/workflows/snake.yml
+#      and paste this entire file's contents into it.
+#   2. Commit and push to main.
+#   3. Go to your repo's Settings -> Actions -> General -> Workflow permissions,
+#      and set it to "Read and write permissions" (required so the action can
+#      push the generated SVG to the "output" branch).
+#   4. Go to the Actions tab and manually run the "generate snake" workflow
+#      once (Run workflow button) so the "output" branch + SVG get created
+#      immediately instead of waiting for the daily schedule.
+#   5. Confirm the raw URL works:
+#      https://raw.githubusercontent.com/<you>/<you>/output/github-contribution-grid-snake-dark.svg
+# ============================================================================
+
+name: generate snake
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # runs once a day at midnight UTC
+  workflow_dispatch: {} # lets you trigger it manually from the Actions tab
+  push:
+    branches:
+      - main
+
+jobs:
+  generate:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: generate github-contribution-grid-snake.svg
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/github-contribution-grid-snake.svg
+            dist/github-contribution-grid-snake-dark.svg?palette=github-dark
+
+      - name: push snake svg to the output branch
+        uses: crazy-max/ghaction-github-pages@v4
+        with:
+          target_branch: output
+          build_dir: dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
