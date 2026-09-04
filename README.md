@@ -63,7 +63,7 @@ me:
 
 ### ◈ How I work
 - Wrote and maintained module specs so handovers never lose context
-- Comfortable in Agile teams *and* as the sole engineer on a system
+- Comfortable in Agile teams
 - Believe good software is: correct, readable, and kind to whoever maintains it next
 - Enjoy the "creative" side of engineering — clean data models and simple UIs are a design problem, not just a technical one
 
