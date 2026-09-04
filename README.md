@@ -36,8 +36,9 @@
 me:
   role: "System Engineer, IIT Guwahati"
   experience: "3+ years shipping production web applications"
-  philosophy: "Software is engineering discipline AND craft — I care as much
-               about how clean and maintainable a system is as whether it works."
+  philosophy: "I treat software as both an engineering discipline and a craft —
+               a system isn't done just because it works, it's done when it's
+               also clean, maintainable, and built to last."
   background: "Started as an automation test engineer, moved into full-stack
                development, and now build & maintain enterprise-grade web
                platforms end to end — backend architecture, database design,
@@ -92,7 +93,7 @@ Own and build multiple production web platforms end-to-end for the institute:
 - 📄 **IP Develop** — reimbursement/filing modules for IP registration, plus a companion **IP Collector** app surfacing a real-time list of IITG-registered IPs from the government inPass system
 - 🏢 **RBS (Room Booking System)** — JSP web app for booking conference halls & meeting rooms campus-wide
 - 🗂️ **ProMan (Office Automation Suite)** — maintained this Java / Hibernate / Spring MVC / JSP system that tracks form movement across the institute: salary slips, leave, reimbursements, PI projects, purchases, travel, job postings, staff onboarding, rate contracts, and more
-- ⚙️ Designed custom **Doctypes, fields, forms & reports** in the **Frappe** framework
+- ⚙️ Designed and developed an application on the **Frappe** framework, including custom **Doctypes, fields, forms & reports**
 
 </td>
 </tr>
