@@ -186,6 +186,14 @@ Built **dSpeedUp**, a highly customizable e-commerce platform for small/medium/l
 
 <img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=12,20,25&height=3&section=header" width="100%"/>
 
+## ✦ Meme Corner 🎭
+
+*(Powered by `meme.yml` from this same handoff — add it to `.github/workflows/` in your profile repo. It pulls a fresh, SFW dev-meme from a public meme API on a schedule and republishes it, so this corner keeps rotating over time. GitHub strips live scripts from READMEs, so this can't tick every 20 seconds on its own — it refreshes roughly every 15 minutes, GitHub Actions' practical floor for a reliable schedule.)*
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Manish-404/Manish-404/assets/meme.png" width="450" alt="random dev meme, refreshed periodically"/>
+</div>
+
 ## ✦ Contribution Snake 🐍
 
 *(Add `snake.yml` from this same handoff to `.github/workflows/` in your profile repo — see instructions at the end of that file. Once the workflow runs once, this line will render an animated snake eating your contribution graph.)*

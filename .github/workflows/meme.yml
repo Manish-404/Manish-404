@@ -1,0 +1,86 @@
+# ============================================================================
+# MEME CORNER — periodic refresh
+# ============================================================================
+# What this does:
+#   Fetches a random, SFW, dev-flavored meme from the public meme-api.com
+#   service, and pushes it as meme.png to an orphan "assets" branch. The
+#   README references that file via raw.githubusercontent.com, so the meme
+#   changes every time this workflow runs.
+#
+# Why not every 20 seconds:
+#   GitHub strips <script>/meta-refresh/iframes from README rendering, so a
+#   static README physically cannot poll an API on its own. Scheduled Actions
+#   are the only way to change what a README points at over time, and GitHub
+#   does not guarantee schedules finer than a few minutes (it throttles and
+#   delays frequent cron schedules, more so on low-activity repos). 15 minutes
+#   is a realistic, reliable cadence.
+#
+# How to install:
+#   1. Copy this file to .github/workflows/meme.yml in your profile repo
+#      (same repo as snake.yml).
+#   2. Settings -> Actions -> General -> Workflow permissions ->
+#      "Read and write permissions" (same as required for snake.yml).
+#   3. Actions tab -> "update meme corner" -> Run workflow, once, to create
+#      the "assets" branch and the first meme.png immediately.
+#   4. Note: GitHub auto-disables scheduled workflows after 60 days with no
+#      pushes to the repo at all — push anything occasionally, or just
+#      re-enable it from the Actions tab if that happens.
+# ============================================================================
+
+name: update meme corner
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  update-meme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Fetch a safe-for-work meme
+        run: |
+          set -e
+          URL=""
+          for i in 1 2 3 4 5; do
+            RESPONSE=$(curl -s "https://meme-api.com/gimme/ProgrammerHumor+wholesomememes+memes")
+            NSFW=$(echo "$RESPONSE" | jq -r '.nsfw // true')
+            SPOILER=$(echo "$RESPONSE" | jq -r '.spoiler // true')
+            CANDIDATE=$(echo "$RESPONSE" | jq -r '.url // empty')
+            if [ "$NSFW" = "false" ] && [ "$SPOILER" = "false" ] && [ -n "$CANDIDATE" ]; then
+              URL="$CANDIDATE"
+              break
+            fi
+          done
+          if [ -z "$URL" ]; then
+            echo "Could not find a suitable meme this run, keeping the previous one."
+            exit 0
+          fi
+          curl -sL "$URL" -o "$GITHUB_WORKSPACE/meme.png"
+          echo "FETCHED=true" >> "$GITHUB_ENV"
+
+      - name: Publish to assets branch
+        if: env.FETCHED == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          rm -rf /tmp/assets-branch
+          if git clone --depth 1 --branch assets "$REPO_URL" /tmp/assets-branch 2>/dev/null; then
+            :
+          else
+            mkdir -p /tmp/assets-branch
+            git -C /tmp/assets-branch init -q
+            git -C /tmp/assets-branch checkout -q -b assets
+            git -C /tmp/assets-branch remote add origin "$REPO_URL"
+          fi
+          cp "$GITHUB_WORKSPACE/meme.png" /tmp/assets-branch/meme.png
+          cd /tmp/assets-branch
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add meme.png
+          git commit -q -m "chore: refresh meme corner" --allow-empty
+          git push origin HEAD:assets --force
